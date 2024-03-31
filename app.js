@@ -2,13 +2,14 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const mongoose = require("mongoose");
+const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 const Campground = require("./models/campground");
 
 async function main() {
   try {
     await mongoose.connect("mongodb://127.0.0.1:27017/yelp-camp");
-    console.log("Connection open");
+    console.log("MongoDB Connection open 🔥");
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
   }
@@ -16,6 +17,7 @@ async function main() {
 
 main();
 
+app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -66,5 +68,5 @@ app.delete("/campgrounds/:id", async (req, res) => {
 });
 
 app.listen("3000", () => {
-  console.log("listening on port 3000");
+  console.log("listening on port 3000 ✨");
 });
