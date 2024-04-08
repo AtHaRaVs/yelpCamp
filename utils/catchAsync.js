@@ -4,5 +4,5 @@ module.exports = (func) => {
   };
 };
 
-// this is a fucntion which accepts a fucntion
+// this is a function which accepts a fucntion
 // then it also returns a function, and execute the fucntions also catching any errors
