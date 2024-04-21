@@ -8,6 +8,7 @@ const { campgroundSchema } = require("./campgroundSchema.js");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 const Campground = require("./models/campground");
+const Review = require("./models/review.js");
 
 async function main() {
   try {
@@ -17,7 +18,7 @@ async function main() {
     console.error("Error connecting to MongoDB:", error);
   }
 }
-   
+
 main();
 
 app.engine("ejs", ejsMate);
@@ -101,6 +102,17 @@ app.delete(
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect("/campgrounds");
+  })
+);
+
+app.post(
+  "/campgrounds/:id/reviews",
+  catchAsync(async (req, res) => {
+    const campground = await Campground.findById(req.params.id);
+    const review = await new Review(req.body.review);
+    campground.reviews.push(review);
+    await review.save();
+    await campground.save();
   })
 );
 
