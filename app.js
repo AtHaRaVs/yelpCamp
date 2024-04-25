@@ -4,7 +4,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
-const { campgroundSchema } = require("./campgroundSchema.js");
+const { campgroundSchema, reviewSchema } = require("./campgroundSchema.js");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 const Campground = require("./models/campground");
@@ -32,6 +32,16 @@ const validateCampground = (req, res, next) => {
   // client side hume bootstrap se kia, pr postman ke through my bypass kr skta ho isse, toh server side validations b dalni pdengi
   // woh joi ki through krdi
   const { error } = campgroundSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+};
+
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
   if (error) {
     const msg = error.details.map((el) => el.message).join(",");
     throw new ExpressError(msg, 400);
@@ -107,6 +117,7 @@ app.delete(
 
 app.post(
   "/campgrounds/:id/reviews",
+  validateReview,
   catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     const review = await new Review(req.body.review);
