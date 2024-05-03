@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const ExpressError = require("./utils/ExpressError");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
+const session = require("express-session");
 
 // routes
 const campgrounds = require("./routes/camgrounds.js");
@@ -20,6 +21,19 @@ async function main() {
   }
 }
 main();
+
+const sessionConfig = {
+  secret: "thisshouldbeabettersecret!",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    expires: Date.now() * 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  },
+};
+
+app.use(session(sessionConfig));
 
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
