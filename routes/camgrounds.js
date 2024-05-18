@@ -4,6 +4,7 @@ const catchAsync = require("../utils/catchAsync");
 const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
 const { campgroundSchema } = require("../campgroundSchema.js");
+const { isLoggedIn } = require("../middleware.js");
 
 const validateCampground = (req, res, next) => {
   // client side hume bootstrap se kia, pr postman ke through my bypass kr skta ho isse, toh server side validations b dalni pdengi
