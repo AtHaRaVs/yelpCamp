@@ -8,10 +8,14 @@ const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const localStratergy = require("passport-local");
+const User = require("./models/user.js");
 
 // routes
-const campgrounds = require("./routes/camgrounds.js");
-const reviews = require("./routes/reviews.js");
+const userRoutes = require("./routes/users.js");
+const campgroundRoutes = require("./routes/camgrounds.js");
+const reviewRoutes = require("./routes/reviews.js");
 
 async function main() {
   try {
@@ -37,6 +41,13 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new localStratergy(User.authenticate()));
+passport.serializeUser(User.serializeUser()); // how to store in session
+passport.deserializeUser(User.deserializeUser()); // how to unstore it in session
+
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -51,8 +62,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/campgrounds", campgrounds);
-app.use("/campgrounds/:id/reviews", reviews);
+app.use("/", userRoutes);
+app.use("/campgrounds", campgroundRoutes);
+app.use("/campgrounds/:id/reviews", reviewRoutes);
 
 app.get("/", (req, res) => {
   res.render("home");
