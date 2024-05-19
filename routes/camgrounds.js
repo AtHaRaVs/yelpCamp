@@ -32,7 +32,6 @@ router.get("/new", isLoggedIn, (req, res) => {
 
 router.get(
   "/:id",
-  isLoggedIn,
   catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id).populate(
       "reviews"
