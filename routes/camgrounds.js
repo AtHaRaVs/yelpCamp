@@ -79,6 +79,11 @@ router.put(
   validateCampground,
   catchAsync(async (req, res) => {
     const { id } = req.params;
+    const campgorund = await Campground.findById(id);
+    if (!campgorund.author.equals(req.user._id)) {
+      req.flahs("error", "You are not allowed!");
+      return res.redirect(`/campgrounds/${id}`);
+    }
     const campground = await Campground.findByIdAndUpdate(id, {
       ...req.body.campground,
     });
