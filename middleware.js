@@ -1,3 +1,7 @@
+const { campgroundSchema, reviewSchema } = require("./schemas");
+const ExpressError = require("./utils/ExpressError");
+const Campground = require("./models/campground");
+
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
     req.session.returnTo = req.originalUrl;
@@ -12,4 +16,36 @@ module.exports.storeReturnTo = (req, res, next) => {
     res.locals.returnTo = req.session.returnTo;
   }
   next();
+};
+
+module.exports.validateCampground = (req, res, next) => {
+  // client side hume bootstrap se kia, pr postman ke through my bypass kr skta ho isse, toh server side validations b dalni pdengi
+  // woh joi ki through krdi
+  const { error } = campgroundSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+};
+
+module.exports.isAuthor = async (req, res, next) => {
+  const { id } = req.params;
+  const campgorund = await Campground.findById(id);
+  if (!campgorund.author.equals(req.user._id)) {
+    req.flash("error", "You are not allowed!");
+    return res.redirect(`/campgrounds/${id}`);
+  }
+  next();
+};
+
+module.exports.validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
 };
