@@ -9,6 +9,9 @@
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item text-muted"><%= campground.location %></li>
+        <li class="list-group-item text">
+          Submitted By: <%= campground.author.username %>
+        </li>
         <li class="list-group-item bold">
           <strong>$<%= campground.price %> / Night</strong>
         </li>
