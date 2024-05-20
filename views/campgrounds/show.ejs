@@ -16,6 +16,7 @@
           <strong>$<%= campground.price %> / Night</strong>
         </li>
       </ul>
+      <% if(currentUser && campground.author.equals(currentUser._id)) {%>
       <div class="card-body">
         <a
           href="/campgrounds/<%= campground._id %>/edit"
@@ -31,6 +32,7 @@
           <button class="btn btn-danger">DELETE</button>
         </form>
       </div>
+      <% } %>
       <div class="card">
         <div class="card-header">
           <a href="/campgrounds">Click here to return to All campgrounds</a>
