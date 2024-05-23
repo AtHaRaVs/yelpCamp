@@ -3,14 +3,21 @@ const Review = require("./review");
 const User = require("./user");
 const Schema = mongoose.Schema;
 
+const imageSchema = new Schema({
+  url: String,
+  filename: String,
+});
+
+imageSchema.virtual("cardImage").get(function () {
+  return this.url.replace("/upload", "/upload/ar_5:3,c_crop");
+});
+
+imageSchema.virtual("thumbnail").get(function () {
+  return this.url.replace("/upload", "/upload/w_200");
+});
 const campgroundSchema = new Schema({
   title: String,
-  images: [
-    {
-      url: String,
-      filename: String,
-    },
-  ],
+  images: [imageSchema],
   price: Number,
   description: String,
   location: String,
