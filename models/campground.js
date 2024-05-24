@@ -32,6 +32,7 @@ const campgroundSchema = new Schema({
       required: true,
     },
   },
+  location: String,
   author: {
     type: Schema.Types.ObjectId,
     ref: "User",
