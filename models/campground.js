@@ -28,7 +28,7 @@ const campgroundSchema = new Schema({
       required: true,
     },
     coordinates: {
-      type: [number],
+      type: [Number],
       required: true,
     },
   },
