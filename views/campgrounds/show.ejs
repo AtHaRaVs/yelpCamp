@@ -1,9 +1,9 @@
 <%- layout('layouts/boilerplate') %>
 <link rel="stylesheet" href="/stylesheets/stars.css" />
 
+<div class="container mt-5">
 <div class="row">
   <div class="col-6">
-    <div id='map' style='width: 400px; height: 300px;'></div>
     <div id="campgroundCrouse" class="carousel slide">
       <div class="carousel-inner">
         <% campground.images.forEach((img,i) =>{%>
@@ -62,7 +62,8 @@
     </div>
   </div>
   <% if(currentUser) { %>
-  <div class="col-6">
+  <div class="col-md-6">
+    <div id="map"></div>
     <h2>Leave a Rating</h2>
     <form
       action="/campgrounds/<%= campground._id %>/reviews"
@@ -81,6 +82,7 @@
           id="rating"
         />
       </div> -->
+      
       <div class="mb-3">
         <fieldset class="starability-basic">
           <input
@@ -165,6 +167,7 @@
     </div>
     <% } %>
   </div>
+</div>
 </div>
 
 <script>
