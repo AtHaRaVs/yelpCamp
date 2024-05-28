@@ -19,6 +19,7 @@ const localStratergy = require("passport-local");
 const User = require("./models/user.js");
 const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
+const port = process.env.PORT || 4000;
 
 // routes
 const userRoutes = require("./routes/users.js");
@@ -161,6 +162,6 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error", { err });
 });
 
-app.listen("3000", () => {
+app.listen(port, () => {
   console.log("listening on port 3000 ✨");
 });
