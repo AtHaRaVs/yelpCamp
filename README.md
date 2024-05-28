@@ -30,7 +30,7 @@ Welcome to the Yelp Camp repository! This project is a full-stack web applicatio
 ![image](https://github.com/AtHaRaVs/yelpCamp/assets/99896281/25c88300-ec74-42ce-8d16-f05bd39eebf2)
 
 ## Demo
-You can check out a live demo of the application [here](https://yelpcamp-i6lq.onrender.com/campgrounds).
+You can check out a live demo of the application [here](https://yelpcamp-i6lq.onrender.com).
 
 ## Installation
 To run this project locally, follow these steps:
