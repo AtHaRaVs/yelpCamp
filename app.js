@@ -12,6 +12,7 @@ const ExpressError = require("./utils/ExpressError");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const localStratergy = require("passport-local");
@@ -23,10 +24,12 @@ const helmet = require("helmet");
 const userRoutes = require("./routes/users.js");
 const campgroundRoutes = require("./routes/camgrounds.js");
 const reviewRoutes = require("./routes/reviews.js");
+const dbUrl = process.env.DB_URL;
+//
 
 async function main() {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/yelp-camp");
+    await mongoose.connect(dbUrl);
     console.log("MongoDB Connection open 🔥");
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
@@ -34,7 +37,20 @@ async function main() {
 }
 main();
 
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  touchAfter: 24 * 60 * 60,
+  crypto: {
+    secret: "thisshouldbeabettersecret!",
+  },
+});
+
+store.on("error", function (e) {
+  console.log("SESSION STORE ERROR", e);
+});
+
 const sessionConfig = {
+  store,
   name: "session",
   secret: "thisshouldbeabettersecret!",
   resave: false,
