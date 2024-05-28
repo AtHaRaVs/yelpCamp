@@ -3,6 +3,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 // imports
+
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -15,6 +16,8 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const localStratergy = require("passport-local");
 const User = require("./models/user.js");
+const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
 
 // routes
 const userRoutes = require("./routes/users.js");
@@ -32,18 +35,75 @@ async function main() {
 main();
 
 const sessionConfig = {
+  name: "session",
   secret: "thisshouldbeabettersecret!",
   resave: false,
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
+    //secure: true,
     expires: Date.now() * 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
 
+app.use(mongoSanitize());
 app.use(session(sessionConfig));
 app.use(flash());
+app.use(helmet());
+
+const scriptSrcUrls = [
+  "https://stackpath.bootstrapcdn.com/",
+  "https://api.tiles.mapbox.com/",
+  "https://api.mapbox.com/",
+  "https://kit.fontawesome.com/",
+  "https://cdnjs.cloudflare.com/",
+  "https://cdn.jsdelivr.net/",
+  "https://res.cloudinary.com/global-managerzz/",
+];
+const styleSrcUrls = [
+  "https://kit-free.fontawesome.com/",
+  "https://stackpath.bootstrapcdn.com/",
+  "https://api.mapbox.com/",
+  "https://api.tiles.mapbox.com/",
+  "https://fonts.googleapis.com/",
+  "https://use.fontawesome.com/",
+  "https://cdn.jsdelivr.net/",
+  "https://res.cloudinary.com/global-managerzz/",
+];
+const connectSrcUrls = [
+  "https://*.tiles.mapbox.com",
+  "https://api.mapbox.com",
+  "https://events.mapbox.com",
+  "https://res.cloudinary.com/global-managerzz/",
+];
+const fontSrcUrls = ["https://res.cloudinary.com/global-managerzz/"];
+
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: [],
+        connectSrc: ["'self'", ...connectSrcUrls],
+        scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+        styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+        workerSrc: ["'self'", "blob:"],
+        objectSrc: [],
+        imgSrc: [
+          "'self'",
+          "blob:",
+          "data:",
+          "https://res.cloudinary.com/global-managerzz/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
+          "https://images.unsplash.com/",
+        ],
+        fontSrc: ["'self'", ...fontSrcUrls],
+        mediaSrc: ["https://res.cloudinary.com/dlzez5yga/"],
+        childSrc: ["blob:"],
+      },
+    },
+    crossOriginEmbedderPolicy: false,
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
